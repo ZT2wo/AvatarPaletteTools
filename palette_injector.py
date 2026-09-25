@@ -10,7 +10,6 @@ def batch_inject_palettes(character_files, inject_defaults:bool) -> None:
     palettes_injected = 0
     character_folder = inject_folder.joinpath(character.name)
     if character_folder.is_dir():
-      print(f'Folder found: {character_folder}')
       for palette in character.palettes:
         if palette.slot_id == "color1" or palette.slot_id == "gold": continue #skip ignorable entries
         palette_file_path = character_folder.joinpath(f'{palette.slot_id}.json')
@@ -23,7 +22,7 @@ def batch_inject_palettes(character_files, inject_defaults:bool) -> None:
             mat_to_edit.color2.set_color(json_material["midtone"] + [255])
             mat_to_edit.color3.set_color(json_material["highlight"] + [255])
           palettes_injected += 1
-      print(f'Injected {palettes_injected} palettes for {character.name}')
+      print(f'{f"Folder found: {character_folder}":<50} | Injected {palettes_injected} palettes for {character.name}')
       if palettes_injected > 0: character.save_file()
     else:
       print(f'Folder for character: {character.name} not found')
