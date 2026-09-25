@@ -25,6 +25,8 @@ def extract_palettes(character_files):
   for character in character_files:
     palettes_extracted = 0
     character_folder = Path(path_to_defaults).joinpath(character.name)
+    if not character_folder.is_dir():
+      character_folder.mkdir( )
     if character_folder.is_dir():
       palette : util.Palette
       for palette in character.palettes:
