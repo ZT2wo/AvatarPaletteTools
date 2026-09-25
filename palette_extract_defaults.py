@@ -30,6 +30,7 @@ def extract_palettes(character_files):
     if character_folder.is_dir():
       palette : util.Palette
       for palette in character.palettes:
+        palettes_extracted += 1
         if palette.slot_id == "color1" or palette.slot_id == "gold": continue #skip ignorable entries
         palette_file_path = character_folder.joinpath(f'{palette.slot_id}.json')
         with palette_file_path.open("w") as palette_file:
