@@ -165,7 +165,7 @@ def load_character_files() -> list:
 
   for file in data_folder.glob("*.pak"):
     if file.stem not in character_paks:
-      print(f'Skipped {file.name}')
+      #print(f'Skipped {file.name}')
       continue
     character = CharacterFile(file)
     if len(character.palettes) < 1:

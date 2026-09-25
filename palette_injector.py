@@ -2,8 +2,10 @@ from pathlib import Path
 import palette_util as util
 import json
 
-def batch_inject_palettes(character_files) -> None:
+def batch_inject_palettes(character_files, inject_defaults:bool) -> None:
   inject_folder = Path("palettes_to_inject")
+  if inject_defaults: inject_folder = inject_folder.joinpath("defaults")
+  character : util.CharacterFile
   for character in character_files:
     palettes_injected = 0
     character_folder = inject_folder.joinpath(character.name)
@@ -16,7 +18,7 @@ def batch_inject_palettes(character_files) -> None:
           palette_file = palette_file_path.read_bytes()
           palette_json = json.loads(palette_file)
           for json_material in palette_json["editableRgb"]:
-            mat_to_edit = palette.materials[terial["row"]]
+            mat_to_edit = palette.materials[json_material["row"]]
             mat_to_edit.color1.set_color(json_material["shadow"] + [255])
             mat_to_edit.color2.set_color(json_material["midtone"] + [255])
             mat_to_edit.color3.set_color(json_material["highlight"] + [255])
@@ -29,16 +31,21 @@ def batch_inject_palettes(character_files) -> None:
 
 
 def main() -> None:
+  inject_defaults = False
   character_files = util.load_character_files()
   if len(character_files) == 0:
     input("Press Enter to Exit...")
     return
+
   choice = input("Do you wish to inject local palettes? y/n : ")
+
   if choice.lower() in ["y", "yes"]:
-    batch_inject_palettes(character_files)
-    return
-  else:
-    return
+    choice = input("Inject defaults instead of customs? y/n : ")
+    if choice.lower() in ["y", "yes"]: inject_defaults = True
+    batch_inject_palettes(character_files, inject_defaults)
+
+  input("Press Enter to Exit...")
+  return
 
 if __name__ == "__main__":
   main()

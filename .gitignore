@@ -182,3 +182,5 @@ cython_debug/
 
 /data_packages
 *.pak
+
+*.json

@@ -23,11 +23,21 @@ Make sure you have python installed and have downloaded the enabler, injector, a
 
 If you've never installed python before this you may have to setup the file association
 
-#### _Inject Palettes from local JSON_
+#### _Extract Defaults From Game_
+1. Double-click the extract_defaults script and enter "y" at the prompt
+This pulls all the palette information from the pak files as they are. Meaning if you have custom palettes already injected, it will include those.
+For a proper collection of defaults, Verify game files in steam, then run this script.
+
+#### _Inject Default Palettes from local JSON_
+1. Double-click the injector script and enter "y" at the prompt
+2. Enter "y" when asked to inject defaults
+
+#### _Inject Custom Palettes from local JSON_
 1. Using [AVFG Palette Editor](https://avfg-palette-editor.up.railway.app/#) (Check it's tutorial), Make your custom palette and export the preset, not the pak. The buttons for this are below the materials.
 2. Place your exported presets into the corresponding character folder in the "palettes_to_inject" folder.
 3. Rename the preset to "color{the slot number of the palette}.json" i.e. "color3.json"
 4. Double-click the injector script and enter "y" at the prompt
+5. Enter "n" when asked to inject defaults
 
 ### You will need to re-run these whenever the game updates.
 
