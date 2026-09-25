@@ -2,22 +2,6 @@ import palette_util as util
 from pathlib import Path
 import json
 
-palette_json = {
-  "editableRgb": []
-}
-material_json = {
-  "row": 0,
-  "shadow": [
-    0,0,0
-  ],
-  "midtone": [
-    0,0,0
-  ],
-  "highlight": [
-    0,0,0
-  ]
-}
-
 path_to_defaults = "palettes_to_inject/defaults"
 
 def extract_palettes(character_files):
@@ -34,14 +18,25 @@ def extract_palettes(character_files):
         if palette.slot_id == "color1" or palette.slot_id == "gold": continue #skip ignorable entries
         palette_file_path = character_folder.joinpath(f'{palette.slot_id}.json')
         with palette_file_path.open("w") as palette_file:
-          collected_palette = palette_json.copy()
+          collected_palette = {"editableRgb": []}
           material : util.Material
           for index, material in enumerate(palette.materials):
-            collected_material = material_json.copy()
+            collected_material = {
+              "row": 0,
+              "shadow": [
+                0,0,0
+              ],
+              "midtone": [
+                0,0,0
+              ],
+              "highlight": [
+                0,0,0
+              ]
+            }
             collected_material["row"] = index
-            collected_material["shadow"] = material.color1.get_color()
-            collected_material["midtone"] = material.color2.get_color()
-            collected_material["highlight"] = material.color3.get_color()
+            collected_material["shadow"] = material.color1.get_color(False)
+            collected_material["midtone"] = material.color2.get_color(False)
+            collected_material["highlight"] = material.color3.get_color(False)
             collected_palette["editableRgb"].append(collected_material)
           palette_file.write(json.dumps(collected_palette))
     print(f'Extracted {palettes_extracted} palettes for {character.name}')
