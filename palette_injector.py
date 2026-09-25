@@ -16,7 +16,7 @@ def batch_inject_palettes(character_files) -> None:
           palette_file = palette_file_path.read_bytes()
           palette_json = json.loads(palette_file)
           for json_material in palette_json["editableRgb"]:
-            mat_to_edit = palette.materials[json_material["row"]]
+            mat_to_edit = palette.materials[terial["row"]]
             mat_to_edit.color1.set_color(json_material["shadow"] + [255])
             mat_to_edit.color2.set_color(json_material["midtone"] + [255])
             mat_to_edit.color3.set_color(json_material["highlight"] + [255])
@@ -34,7 +34,7 @@ def main() -> None:
     input("Press Enter to Exit...")
     return
   choice = input("Do you wish to inject local palettes? y/n : ")
-  if choice.lower in ["y", "yes"]:
+  if choice.lower() in ["y", "yes"]:
     batch_inject_palettes(character_files)
     return
   else:

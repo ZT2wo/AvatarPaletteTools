@@ -18,7 +18,7 @@ def main():
     input("Press Enter to Exit...")
     return
   choice = input("Do you wish to unlock all (Non-DLC) palettes? y/n : ")
-  if choice == "y":
+  if choice.lower() in ["y", "yes"]:
     unlock_all_palettes(character_files)
     return
 
