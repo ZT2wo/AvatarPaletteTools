@@ -47,17 +47,18 @@ class Color:
     self.character_file.data[self.color_pos + 3] = self.a
 
   def set_color(self, rgba) -> None:
-    if len(rgba) != 4:
-      raise ValueError(f"RGBA tuple must have 4 components, got {len(rgba)}")
+    if len(rgba) < 3 or len(rgba) > 4:
+      raise ValueError(f"RGBA tuple must have 3 or 4 components, got {len(rgba)}")
     for component in rgba:
       if type(component) is not int:
         raise ValueError(f"RGBA components must be integers, got {type(component)}")
-    self.r, self.g, self.b, self.a = rgba
+    if len(rgba) == 4: self.r, self.g, self.b, self.a = rgba
+    else: self.r, self.g, self.b = rgba
     self.float_tuple = self.as_float_tuple()
     self.write_color()
 
-  def get_color(self) -> tuple:
-    return (self.r, self.g, self.b, self.a)
+  def get_color(self, include_a : bool = True) -> tuple:
+    return (self.r, self.g, self.b, self.a) if include_a else (self.r, self.g, self.b)
 
   def __str__(self) -> str:
     return f"Color(RGBA): ({self.r}, {self.g}, {self.b}, {self.a})"
@@ -128,7 +129,7 @@ class CharacterFile:
     self.name = self.path.stem
     self.data = bytearray(self.path.read_bytes())
     self.palettes = []
-
+    self.eop_byte = None
     self.find_palettes()
 
   def save_file(self, file_name = None) -> None:
@@ -144,11 +145,14 @@ class CharacterFile:
   def find_palettes(self) -> None:
     palette_num = 1
     marker = re.compile(rb'!src/sprites\\([^\\]+)\\palettes\\([^\x00]+)\x00*([^\x00])') 
-    for match in marker.finditer(self.data):#match groups 1: character name, 2: palette name, 3: end of path ascii
+    for match in marker.finditer(self.data):#match groups 1: character name, 2: palette name, 3: end of path byte
 
-      if "colormap" in match.group(2).decode('utf-8'):
-        continue  # Skip colormap palettes
-
+      if "colormap" in match.group(2).decode('utf-8') or "color1.png" in match.group(2).decode('utf-8'):
+        continue  # Skip colormap palettes and reference palettes
+      if self.eop_byte == None:
+        self.eop_byte = match.group(3)
+      #print(f'Current EOP : {match.group(3)} | Check Byte : {self.eop_byte} | Palette Name : {match.group(2)}')
+      if match.group(3) != self.eop_byte: continue #Skip invalid/empty palettes
       found_palette = Palette(self, match)
       #print(f"Found palette {palette_num}: {match.group(2).decode('utf-8')} in {self.path.name}")
 
@@ -171,5 +175,5 @@ def load_character_files() -> list:
     if len(character.palettes) < 1:
       continue  # Skip files with no palettes
     character_files.append(character)
-    print(f"Character file: {file.name} - {len(character.palettes)} Palette(s) found")
+    print(f'{f"Character file: {file.name}":<50} - {len(character.palettes)} Palette(s) found')
   return character_files
